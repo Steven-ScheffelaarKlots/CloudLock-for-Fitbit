@@ -8,5 +8,12 @@ app.config(['$routeProvider', function($routeProvider) {
     $routeProvider.otherwise({redirectTo: '/'});
 }]);
 
+app.config(['$routeProvider', function($routeProvider) {
+    $routeProvider.when('/', {
+	    templateUrl: 'templates/fitbitTemplate.html',
+	    controller: 'fitbitController'
+	});
+}]);
+
 
 

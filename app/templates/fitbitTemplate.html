@@ -1,0 +1,18 @@
+<div ng-controller="fitbitController">
+    <h1>CloudLock Fitness</h1>
+
+    <leaflet width="100%" height="480px"></leaflet>
+    <nvd3-multi-bar-horizontal-chart
+       data="exampleData"
+        id="exampleId"
+
+        yAxisTickFormat="yAxisTickFormatFunction()"
+        width="550"
+        height="350"
+        showvalues="true"
+        showXAxis="true"
+        showYAxis="true">
+           <svg></svg>
+    </nvd3-multi-bar-horizontal-chart>
+
+</div>
