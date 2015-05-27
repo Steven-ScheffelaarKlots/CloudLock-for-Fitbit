@@ -1,22 +1,28 @@
 <!DOCTYPE html>
 <html ng-app="demoapp">
   <head>
+     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <title>Cloudlock Fitbit</title>
+    
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-route/angular-route.js"></script>
-
+    <script src="bower_components/angularjs-nvd3-directives/dist/angularjs-nvd3-directives.js"></script>
+    
     <script src="components/version/version.js"></script>
     <script src="components/version/version-directive.js"></script>
     <script src="components/version/interpolate-filter.js"></script>
     <script src="components/packages/angular-leaflet-directive-master/dist/angular-leaflet-directive.min.js"></script>
-    
+
     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 
     <script src="app.js"></script>
     
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
 
+    <script src="bower_components/d3/d3.js"></script>
+    <script src="bower_components/nvd3/nv.d3.js"></script>
+    <link rel="stylesheet" href="bower_components/nvd3/nv.d3.css"/>
  
     <script>
       var app = angular.module("demoapp", ['leaflet-directive']);
@@ -28,6 +34,6 @@
   
   <body ng-controller="fitbitMapController">
     <leaflet  width="100%" height="480px"></leaflet>
-    <h1>First steps, basic example</h1>
+    <h1>Lets be active!</h1>
   </body>
 </html>
