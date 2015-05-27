@@ -1,3 +1,7 @@
+### The app is split into two pieces. Frontend served by npm, api/backend served by flask.
+
+## Frontend
+
 ### Install Dependencies
 
 We have two kinds of dependencies in this project: tools and angular framework code.  The tools help
@@ -25,10 +29,31 @@ it easier to serve the files by a webserver.*
 ### Run the Application
 
 We have preconfigured the project with a simple development web server.  The simplest way to start
-this server is:
+this frontend server is:
 
 ```
 npm start
 ```
 
 Now browse to the app at `http://localhost:8000/app/index.html`.
+
+## Backend
+
+### Build Virtual Env
+
+```
+virtualenv clfbenv
+```
+
+### Install Dependencies
+
+```
+. clfbenv/bin/activate
+pip install -r requirements.txt
+```
+
+### Run the Application
+
+```
+python app.py
+```
