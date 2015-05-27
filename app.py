@@ -28,6 +28,14 @@ def thank_you():
 
     return '{}:{}'.format(customer_tok, customer_ver)
 
+
+@app.route('/distance')
+def get_distance_data():
+    return {
+        "Series 1":
+        [["Brian", 20000], ["Steven", 50], ["Clayton", 6000], ["Rich", 10000]]
+    }
+
 if __name__ == '__main__':
     app.run(debug=True, port=6544)
 

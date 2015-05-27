@@ -2,11 +2,23 @@
 
 angular.module('myApp.view1', ['ngRoute', 'leaflet-directive', 'nvd3ChartDirectives'])
 
-function fitbitController($scope, leafletData) {
+function fitbitController($scope, leafletData, Distance) {
     $scope.exampleData = [{
         key: "Series 1",
         values: [ [ "Brian" , 20000] , [ "Steven", 50] , [ "Clayton", 6000] , [ "Rich" , 10000]    ]
     }];
+
+    /*
+        $scope.exampleData = Distance.get({
+        }, function(data) {
+
+            $scope.data = data.payload;
+
+        },function() {
+
+            $scope.data = "N/A";
+        });
+    */
 
     angular.extend($scope, {
         center: {
@@ -62,5 +74,5 @@ function fitbitController($scope, leafletData) {
 }
 
 
-fitbitController.$inject = [ "$scope", "leafletData"];
+fitbitController.$inject = [ "$scope", "leafletData","Distance"];
 
