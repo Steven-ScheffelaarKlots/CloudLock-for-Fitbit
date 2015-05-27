@@ -16,19 +16,27 @@
 
     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
 
+
+    <script src="controllers/fitbitController.js"></script>
     <script src="app.js"></script>
     
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
-
+    
     <script src="bower_components/d3/d3.js"></script>
     <script src="bower_components/nvd3/nv.d3.js"></script>
     <link rel="stylesheet" href="bower_components/nvd3/nv.d3.css"/>
  
     <script>
+      //var app = angular.module("myApp", ['ngRoute', 'leaflet-directive', 'nvd3ChartDirectives'])
+      //.controller("fitbitController", [ "$scope", "leafletData", function($scope, leafletData) {
+      // Nothing yet
+      
+      //}]);
+      
    </script>
   </head>
-  
-  <body ng-controller="fitbitMapController">
+                    
+  <body ng-controller="fitbitController">
     <leaflet  width="100%" height="480px"></leaflet>
     <h1>Lets be active!</h1>
   </body>

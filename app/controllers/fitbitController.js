@@ -1,7 +1,11 @@
 'use strict';
 
+function fitbitController($scope, leafletData) {
+    // Nothig yet
+}
 
-var app = angular.module("myApp", ['ngRoute', 'leaflet-directive', 'nvd3ChartDirectives']);
+
+fitbitController.$inject = [ "$scope", "leafletData"];
 
 
 /*app.config(['$routeProvider', function($routeProvider) {
@@ -10,11 +14,6 @@ var app = angular.module("myApp", ['ngRoute', 'leaflet-directive', 'nvd3ChartDir
 	controller: 'View1Ctrl'
 	});
 }])*/
-
-
-app.controller("fitbitMapController", [ "$scope", "leafletData", function($scope, leafletData) {
-    // Nothing yet
-}]);
 
 
 /*app.controller('View1Ctrl', ['$scope', function($scope) {
