@@ -1,5 +1,5 @@
 'use strict';
-angular.module('myApp.view1', ['ngRoute', "leaflet-directive"])
+angular.module('myApp.view1', ['ngRoute', 'leaflet-directive', 'nvd3ChartDirectives'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/view1', {
@@ -14,4 +14,9 @@ angular.module('myApp.view1', ['ngRoute', "leaflet-directive"])
             scrollWheelZoom: false
         }
     });
+
+        $scope.exampleData = [{
+                     key: "Series 1",
+                     values: [ [ "Brian" , 20000] , [ "Steven", 50] , [ "Clayton", 6000] , [ "Rich" , 10000]    ]
+                     }];
 }]);
