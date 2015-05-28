@@ -1,6 +1,6 @@
 'use strict';
 
-function fitbitController($scope) {
+function fitbitController($scope, $filter) {
     
     var startDest = {lat: 42.3699388, lng: -71.2458321}; // CloudLock HQ
     var endDest   = {lat: 37.790599,  lng: -71.2458321};
@@ -22,6 +22,8 @@ function fitbitController($scope) {
 	{name: 'Bobbert',  distance: 43},
 	{name: 'Sarah',    distance: 13},
 	{name: 'Tedison',  distance: 32}];
+
+    usersDistance = $filter('orderBy')(usersDistance, '-distance');
 
     // Map user distance to D3 compliant data object.
     $scope.exampleData = [{
@@ -97,5 +99,5 @@ function fitbitController($scope) {
 }
 
 
-fitbitController.$inject = ["$scope"];
+fitbitController.$inject = ["$scope", "$filter"];
 
