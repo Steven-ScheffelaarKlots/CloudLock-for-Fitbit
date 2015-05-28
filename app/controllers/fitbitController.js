@@ -22,23 +22,21 @@ function fitbitController($scope, $filter, $http) {
 	{name: 'Bobbert',  distance: 430},
 	{name: 'Sarah',    distance: 130},
 	{name: 'Tedison',  distance: 320}];
-
+    
     $http.get('http://localhost:6544/distance')
         .success(function(data, status, headers, config) {
-            usersDistance.push(data);
-
-        })
-        .error(function(data, status, headers, config) {
-
-        });
-
-    usersDistance = $filter('orderBy')(usersDistance, '-distance');
-
-    // Map user distance to D3 compliant data object.
-    $scope.exampleData = [{
-	key: "Series 1",
-	values: usersDistance.map( function(obj) { return [obj.name, obj.distance]; })
-    }];
+	    
+	    data.forEach(function(obj){ usersDistance.push(obj); });
+	    createPath(usersDistance);
+	    
+	    // Map user distance to D3 compliant data object.
+	    $scope.exampleData = [{
+		key: "Series 1",
+		values: $filter('orderBy')(usersDistance, '-distance').map( function(obj) { return [obj.name, obj.distance]; })
+	    }];	    
+	}).error(function(data){
+	    // Cry
+	});
     
     $scope.paths   = {};
     $scope.markers = {};
@@ -47,7 +45,11 @@ function fitbitController($scope, $filter, $http) {
         lng: -97.0452066,
 	zoom: 4
     };	
+    $scope.defaults = {
+        scrollWheelZoom: false
+    };
 
+    
     function radians(deg){
 	return deg * (Math.PI / 180);
     };
@@ -139,8 +141,6 @@ function fitbitController($scope, $filter, $http) {
 	console.log( $scope.paths );
 	console.log( $scope.markers );
     }
-    
-    createPath(usersDistance);
 }
 
 fitbitController.$inject = ["$scope", "$filter", "$http"];

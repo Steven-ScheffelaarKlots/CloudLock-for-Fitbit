@@ -64,7 +64,7 @@ def get_distance_data():
         distance = stats.get(u'activities-distance')[0].get(u'value')
         results.append({'name': name,
                         'avatar': avatar,
-                        'distance': distance})
+                        'distance': float(distance)})
     return json.dumps(results)
 
 if __name__ == '__main__':
