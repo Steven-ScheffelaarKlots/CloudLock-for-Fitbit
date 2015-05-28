@@ -14,6 +14,7 @@ function fitbitController($scope, $filter, $http) {
 	return color;
     }
 
+
     $scope.exampleData = [];
     $scope.paths   = {};
     $scope.markers = {};
@@ -30,20 +31,22 @@ function fitbitController($scope, $filter, $http) {
     
     var usersDistance = [
 	{name: 'Tom',      distance: 1.2, avatar: "https://pbs.twimg.com/profile_images/517321674471923712/bFqGdWJL_400x400.jpeg"},
-	{name: 'Jan',      distance: 2.3, avatar: "https://pbs.twimg.com/profile_images/517321674471923712/bFqGdWJL_400x400.jpeg"},
-	{name: 'Mike',     distance: 5.1, avatar: "https://pbs.twimg.com/profile_images/517321674471923712/bFqGdWJL_400x400.jpeg"},
-	{name: 'Jane',     distance: 4.5, avatar: "https://pbs.twimg.com/profile_images/517321674471923712/bFqGdWJL_400x400.jpeg"},
-	{name: 'Bobbert',  distance: 4.3, avatar: "https://pbs.twimg.com/profile_images/517321674471923712/bFqGdWJL_400x400.jpeg"},
-	{name: 'Sarah',    distance: 1.3, avatar: "https://pbs.twimg.com/profile_images/517321674471923712/bFqGdWJL_400x400.jpeg"},
-	{name: 'Tedison',  distance: 3.2, avatar: "https://pbs.twimg.com/profile_images/517321674471923712/bFqGdWJL_400x400.jpeg"}];
+	{name: 'Jan',      distance: 2.3, avatar: "http://zohararad.github.io/presentations/falling-in-love-with-ruby/presentation/images/ruby.png"},
+	{name: 'Mike',     distance: 5.1, avatar: "https://flyingonemptythoughts.files.wordpress.com/2013/06/neutral-its-something-l.png"},
+	{name: 'Jane',     distance: 4.5, avatar: "http://img3.wikia.nocookie.net/__cb20120826123355/vssaxtonhale/images/c/c2/Troll-face.png"},
+	{name: 'Bobbert',  distance: 4.3, avatar: "http://images4.fanpop.com/image/photos/19700000/Horton-hears-a-who-pics-horton-hears-a-who-19717311-1109-529.jpg"},
+	{name: 'Sarah',    distance: 1.3, avatar: "https://pbs.twimg.com/profile_images/447460759329460224/mt2UmwGG_400x400.jpeg"},
+	{name: 'Tedison',  distance: 3.2, avatar: "https://www.petfinder.com/wp-content/uploads/2012/11/122163343-conditioning-dog-loud-noises-632x475.jpg"}];
     
     $http.get('http://localhost:6544/distance')
         .success(function(data, status, headers, config) {
 	    console.log( data );
 	    data.forEach(function(obj){ usersDistance.push(obj); });
 		$scope.gotStuff = true;
-	    createPath(usersDistance);
-	    
+
+
+
+
 	    $scope.colorFunction = function() {   
 		return function(d, i) {
 	            console.log("Colors", d, $scope.colors);
@@ -52,8 +55,10 @@ function fitbitController($scope, $filter, $http) {
 	    };
 	    
 	    
-	    console.log( "Here", usersDistance = $filter('orderBy')(usersDistance, '-distance'));
-	    
+	    console.log( "Here", usersDistance = $filter('orderBy')(usersDistance, '-distance', 'reverse'));
+
+			 createPath(usersDistance);
+
 	    // Map user distance to D3 compliant data object.
 	    /*  usersDistance.forEach(function(obj){
 		var temp = {
@@ -61,9 +66,10 @@ function fitbitController($scope, $filter, $http) {
 		    values: [[obj.name, obj.distance]]
 		    //	    color: "#2f2f2f"
 		    };*/
+			usersDistance = $filter('orderBy')(usersDistance, '-distance');
 	    $scope.exampleData = [{
 		key: "Series 1",
-		values: $filter('orderBy')(usersDistance, '-distance').map( function(obj) { return [obj.name, obj.distance]; })
+		values: usersDistance.map( function(obj) { return [obj.name, obj.distance]; })
 	    }]; 
 	    
 	    //$scope.exampleData.push(temp);
@@ -180,7 +186,7 @@ function fitbitController($scope, $filter, $http) {
 		    iconSize: [40, 40],
 		    iconAnchor: [20, 40],
 		    popupAnchor: [3, -32],
-		    shadowSize: [0, 0],
+		    shadowSize: [40, 40],
 		    shadowAnchor: [0, 0]
 		},
 		
@@ -197,7 +203,7 @@ function fitbitController($scope, $filter, $http) {
 	var centerCoords =  getMidpoint(startDest, prevCoords);
 	$scope.center.lat =  centerCoords.lat;
 	$scope.center.lng =  centerCoords.lng;
-	$scope.center.zoom = 5 ;
+	$scope.center.zoom = 11 ;
 	console.log( "Bottom" );
     }
 }
