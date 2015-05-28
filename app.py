@@ -26,15 +26,18 @@ def authorize():
     client = fitbit.FitbitOauthClient(consumer_key, consumer_secret)
     token = client.fetch_request_token()
 
-    return redirect(client.authorize_token_url(token=token))
+    resp = redirect(client.authorize_token_url(token=token))
+    resp.set_cookie('token', value=json.dumps(token))
+    return resp
 
 
 @app.route('/thankyou')
 def thank_you():
     customer_ver = request.args.get('oauth_verifier')
+    token = json.loads(request.cookies.get('token'))
 
     client = fitbit.FitbitOauthClient(consumer_key, consumer_secret)
-    token = client.fetch_access_token(customer_ver)
+    token = client.fetch_access_token(customer_ver, token)
 
     # store these
     db.keys.insert({
