@@ -15,13 +15,13 @@ function fitbitController($scope, $filter, $http) {
     }
 
     var usersDistance = [
-	{name: 'Tom',      distance: 12},
-	{name: 'Jan',      distance: 23},
-	{name: 'Mike',     distance: 43},
-	{name: 'Jane',     distance: 45},
-	{name: 'Bobbert',  distance: 43},
-	{name: 'Sarah',    distance: 13},
-	{name: 'Tedison',  distance: 32}];
+	{name: 'Tom',      distance: 120},
+	{name: 'Jan',      distance: 230},
+	{name: 'Mike',     distance: 430},
+	{name: 'Jane',     distance: 450},
+	{name: 'Bobbert',  distance: 430},
+	{name: 'Sarah',    distance: 130},
+	{name: 'Tedison',  distance: 320}];
 
     $http.get('http://localhost:6544/distance')
         .success(function(data, status, headers, config) {
@@ -47,19 +47,55 @@ function fitbitController($scope, $filter, $http) {
         lng: -97.0452066,
 	zoom: 4
     };	
+
+    function radians(deg){
+	return deg * (Math.PI / 180);
+    };
+    function degrees(rad){
+	return rad * (180 / Math.PI);
+    };
+    
+    function getBearing(startLat,startLong,endLat,endLong){
+	startLat   = radians(startLat);
+	startLong  = radians(startLong);
+	endLat     = radians(endLat);
+	endLong    = radians(endLong);
+
+	var dLong = endLong - startLong;
+
+	var dPhi = Math.log(Math.tan(endLat/2.0+Math.PI/4.0)/Math.tan(startLat/2.0+Math.PI/4.0));
+	if (Math.abs(dLong) > Math.PI){
+	    if (dLong > 0.0)
+		dLong = -(2.0 * Math.PI - dLong);
+	    else
+		dLong = (2.0 * Math.PI + dLong);
+	}
+
+	return (degrees(Math.atan2(dLong, dPhi)) + 360.0) % 360.0;
+    }
     
     function calcCoords(from, dist){
 	//http://janmatuschek.de/LatitudeLongitudeBoundingCoordinates
-	
-	var conversion = 1.115;
+	var startDest = {lat: 42.3699388, lng: -71.2458321}; // CloudLock HQ
+	var endDest   = {lat: 45.5168567, lng: -122.6725146}; // Salesforce HQ
 
-	// Following used for testing. Will be refactored.
-	var lat = from.lat;
-	var lng = from.lng - ( dist * .15 );  // Not real, not yet: 
-	var temp = {lat: lat, lng: lng}; // :(
-	console.log( temp );
-	return temp;
+	var brng = getBearing(startDest.lat, startDest.lng, endDest.lat, endDest.lng);// geo.bearing(startDest, endDest);
+		
+	var R  = 6478.1;
+	var km = dist * 1.60934;
+
+	var lat1 = from.lat * Math.PI / 180;
+	var lng1 = from.lng * Math.PI / 180;
+
+	var lat2 = Math.asin( Math.sin(lat1) * Math.cos(km/R) +
+			  Math.cos(lat1) * Math.sin(km/R) * Math.cos(brng));
+
+	var lng2 = lng1 + Math.atan2(Math.sin(brng)*Math.sin(km/R)*Math.cos(lat1),
+				 Math.cos(km/R)-Math.sin(lat1)*Math.sin(lat2));
+
+	return {lat: lat2 * 180 / Math.PI, lng: lng2 * 180 / Math.PI};
     };
+    
     
     function createPath(obj){
 	var startDest = {lat: 42.3699388, lng: -71.2458321}; // CloudLock HQ
@@ -107,6 +143,4 @@ function fitbitController($scope, $filter, $http) {
     createPath(usersDistance);
 }
 
-
 fitbitController.$inject = ["$scope", "$filter", "$http"];
-
