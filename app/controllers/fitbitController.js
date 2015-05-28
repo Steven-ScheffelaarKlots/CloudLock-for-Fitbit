@@ -1,8 +1,7 @@
 'use strict';
 
-angular.module('myApp.view1', ['ngRoute', 'leaflet-directive', 'nvd3ChartDirectives'])
-
-function fitbitController($scope, leafletData) {
+function fitbitController($scope) {
+    
     var startDest = {lat: 42.3699388, lng: -71.2458321}; // CloudLock HQ
     var endDest   = {lat: 37.790599,  lng: -71.2458321};
 
@@ -98,5 +97,5 @@ function fitbitController($scope, leafletData) {
 }
 
 
-fitbitController.$inject = [ "$scope", "leafletData"];
+fitbitController.$inject = ["$scope"];
 
