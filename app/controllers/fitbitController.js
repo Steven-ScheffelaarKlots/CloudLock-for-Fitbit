@@ -4,7 +4,7 @@ function fitbitController($scope, $filter, $http) {
     
     var startDest = {lat: 42.3699388, lng: -71.2458321}; // CloudLock HQ
     var endDest   = {lat: 37.790599,  lng: -71.2458321};
-
+	$scope.gotStuff = false;
     function randColor(){
 	var letters = '0123456789ABCDEF'.split('');
 	var color = '#';
@@ -41,7 +41,7 @@ function fitbitController($scope, $filter, $http) {
         .success(function(data, status, headers, config) {
 	    console.log( data );
 	    data.forEach(function(obj){ usersDistance.push(obj); });
-
+		$scope.gotStuff = true;
 	    createPath(usersDistance);
 	    
 	    $scope.colorFunction = function() {   
