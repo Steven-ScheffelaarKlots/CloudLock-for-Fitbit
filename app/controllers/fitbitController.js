@@ -1,6 +1,6 @@
 'use strict';
 
-function fitbitController($scope, $filter) {
+function fitbitController($scope, $filter, $http) {
     
     var startDest = {lat: 42.3699388, lng: -71.2458321}; // CloudLock HQ
     var endDest   = {lat: 37.790599,  lng: -71.2458321};
@@ -22,6 +22,15 @@ function fitbitController($scope, $filter) {
 	{name: 'Bobbert',  distance: 43},
 	{name: 'Sarah',    distance: 13},
 	{name: 'Tedison',  distance: 32}];
+
+    $http.get('http://localhost:6544/distance')
+        .success(function(data, status, headers, config) {
+            usersDistance.push(data);
+
+        })
+        .error(function(data, status, headers, config) {
+
+        });
 
     usersDistance = $filter('orderBy')(usersDistance, '-distance');
 
@@ -99,5 +108,5 @@ function fitbitController($scope, $filter) {
 }
 
 
-fitbitController.$inject = ["$scope", "$filter"];
+fitbitController.$inject = ["$scope", "$filter", "$http"];
 
