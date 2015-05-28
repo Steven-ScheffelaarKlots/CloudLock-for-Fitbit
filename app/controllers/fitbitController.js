@@ -1,10 +1,6 @@
 'use strict';
 
-
-
-angular.module('myApp.view1', ['ngRoute', 'leaflet-directive', 'nvd3ChartDirectives' ])
-
-function fitbitController($scope, leafletData) {
+function fitbitController($scope, $filter, $http) {
     
     var startDest = {lat: 42.3699388, lng: -71.2458321}; // CloudLock HQ
     var endDest   = {lat: 37.790599,  lng: -71.2458321};
@@ -26,6 +22,17 @@ function fitbitController($scope, leafletData) {
 	{name: 'Bobbert',  distance: 430},
 	{name: 'Sarah',    distance: 130},
 	{name: 'Tedison',  distance: 320}];
+
+    $http.get('http://localhost:6544/distance')
+        .success(function(data, status, headers, config) {
+            usersDistance.push(data);
+
+        })
+        .error(function(data, status, headers, config) {
+
+        });
+
+    usersDistance = $filter('orderBy')(usersDistance, '-distance');
 
     // Map user distance to D3 compliant data object.
     $scope.exampleData = [{
@@ -136,6 +143,4 @@ function fitbitController($scope, leafletData) {
     createPath(usersDistance);
 }
 
-
-fitbitController.$inject = [ "$scope", "leafletData"];
-
+fitbitController.$inject = ["$scope", "$filter", "$http"];
