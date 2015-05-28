@@ -32,7 +32,6 @@ def thank_you():
 
     client = fitbit.FitbitOauthClient(consumer_key, consumer_secret)
     token = client.fetch_access_token(customer_ver)
-    import pdb; pdb.set_trace()
 
     # store these
     db.keys.insert({
