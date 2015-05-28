@@ -1,10 +1,13 @@
 from flask import Flask, redirect, request
+from flask.ext.cors import CORS
 import ConfigParser
 import fitbit
 import json
 from pymongo import MongoClient
 
 app = Flask(__name__)
+CORS(app, resources=r'/distance', allow_headers='Content-Type')
+
 parser = ConfigParser.SafeConfigParser()
 parser.read('fitbit.ini')
 consumer_key = parser.get('Login Parameters', 'C_KEY')
