@@ -14,13 +14,7 @@ function fitbitController($scope, leafletData) {
 	}
 	return color;
     }
-    
-    
-    $scope.exampleData = [{
-        key: "Series 1",
-        values: [ [ "Brian" , 20000] , [ "Steven", 50] , [ "Clayton", 6000] , [ "Rich" , 10000]    ]
-    }];
-    
+
     var usersDistance = [
 	{name: 'Tom',      distance: 12},
 	{name: 'Jan',      distance: 23},
@@ -30,6 +24,12 @@ function fitbitController($scope, leafletData) {
 	{name: 'Sarah',    distance: 13},
 	{name: 'Tedison',  distance: 32}];
 
+    // Map user distance to D3 compliant data object.
+    $scope.exampleData = [{
+	key: "Series 1",
+	values: usersDistance.map( function(obj) { return [obj.name, obj.distance]; })
+    }];
+    
     $scope.paths   = {};
     $scope.markers = {};
     $scope.center  = {
@@ -73,16 +73,13 @@ function fitbitController($scope, leafletData) {
 	    var tempMarker = {
 	        lat: nextCoords.lat,
 		lng: nextCoords.lng,
-		//focus: true,
+		focus: true,
+		draggable: false,
 		title: obj[i].name,
-		draggable: true,
+		
+		
 		message: obj[i].name,
-		label: {
-		    message: obj[i].name,
-		    options: {
-			noHide: true
-		    }
-		}
+		
 	    };
 
 	    // Inserts new objects into existing objects.
