@@ -62,7 +62,9 @@ def get_distance_data():
         avatar = profile.get(u'user').get(u'avatar150')
         stats = authd_client.time_series(u'activities/distance', period=u'1d')
         distance = stats.get(u'activities-distance')[0].get(u'value')
-        results.append('name: "{}", avatar: {}, distance: {}'.format(name, avatar, distance))
+        results.append({'name': name,
+                        'avatar': avatar,
+                        'distance': distance})
     return json.dumps(results)
 
 if __name__ == '__main__':
