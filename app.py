@@ -13,8 +13,19 @@ parser.read('fitbit.ini')
 consumer_key = parser.get('Login Parameters', 'C_KEY')
 consumer_secret = parser.get('Login Parameters', 'C_SECRET')
 
-mongoClient = MongoClient('mongodb://admin:cloudlock11@ds034878.mongolab.com:34878/fitbit-cloudlock')
-db = mongoClient['fitbit-cloudlock']
+username = parser.get('Mongodb Parameters', 'USERNAME')
+password = parser.get('Mongodb Parameters', 'PASSWORD')
+uri = parser.get('Mongodb Parameters', 'DB_URI')
+db_name = parser.get('Mongodb Parameters', 'DB_NAME')
+
+mongoClient = MongoClient('mongodb://{username}:{password}@{uri}/{db_name}'.format(
+    username=username,
+    password=password,
+    uri=uri,
+    db_name=db_name
+))
+db = mongoClient[db_name]
+
 
 @app.route('/')
 def fake_it():
