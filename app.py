@@ -3,6 +3,7 @@ from flask.ext.cors import CORS
 import ConfigParser
 import fitbit
 import json
+from datetime import datetime, timedelta
 from pymongo import MongoClient
 
 app = Flask(__name__)
@@ -52,8 +53,8 @@ def thank_you():
 
     # store these
     db.keys.insert({
-        'client_key': token.get(u'oauth_token'),
-        'client_secret': token.get(u'oauth_token_secret')
+        u'client_key': token.get(u'oauth_token'),
+        u'client_secret': token.get(u'oauth_token_secret'),
     })
 
     return redirect('http://localhost:8000/app/#/')
@@ -71,9 +72,24 @@ def get_distance_data():
                                      resource_owner_key=cust_key,
                                      resource_owner_secret=cust_tok)
 
-        profile = authd_client.user_profile_get()
-        name = profile.get(u'user').get(u'displayName')
-        avatar = profile.get(u'user').get(u'avatar150')
+        user = db.profile.find_one({u'user': cust_key})
+        if not user or user.get(u'updated_on') - datetime.utcnow() > timedelta(days=1):
+            profile = authd_client.user_profile_get()
+            name = profile.get(u'user').get(u'displayName')
+            avatar = profile.get(u'user').get(u'avatar150')
+            db.profile.update_one(
+                {u'user': cust_key},
+                {'$set': {
+                    u'user': cust_key,
+                    u'name': name,
+                    u'avatar': avatar,
+                    u'updated_on': datetime.utcnow()
+                }},
+                upsert=True)
+        else:
+            name = user.get(u'name')
+            avatar = user.get(u'avatar')
+
         stats = authd_client.time_series(u'activities/distance', period=u'1d')
         distance = stats.get(u'activities-distance')[0].get(u'value')
         results.append({'name': name,
