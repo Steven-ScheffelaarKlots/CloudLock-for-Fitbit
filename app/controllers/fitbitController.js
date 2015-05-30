@@ -4,80 +4,76 @@ function fitbitController($scope, $filter, $http) {
     
     var startDest = {lat: 42.3699388, lng: -71.2458321}; // CloudLock HQ
     var endDest   = {lat: 37.790599,  lng: -71.2458321};
-	$scope.gotStuff = false;
-    function randColor(){
+    $scope.gotStuff = false;
+
+    function randomColor(seed){
 	var letters = '0123456789ABCDEF'.split('');
 	var color = '#';
-	for (var i = 0; i < 6; i++ ) {
-	    color += letters[Math.floor(Math.random() * 16)];
+	for (var i = 0; i < 6; i++ ) {   
+	    color += letters[Math.floor((seed = Math.random(seed)) * 16)]; // Sooooo goood
 	}
 	return color;
     }
 
-
     $scope.exampleData = [];
-    $scope.paths   = {};
-    $scope.markers = {};
-    $scope.colors  = [];
-    $scope.center  = {
+    $scope.paths       = {};
+    $scope.markers     = {};
+    $scope.center      = {
         lat: 37.5960374,
         lng: -97.0452066,
 	zoom: 4
     };	
-    $scope.defaults = {
+    $scope.defaults    = {
         scrollWheelZoom: false
     };
-    
-    
+        
     var usersDistance = [
-	{name: 'Tom',      distance: 1.2, avatar: "https://pbs.twimg.com/profile_images/517321674471923712/bFqGdWJL_400x400.jpeg"},
+/*	{name: 'Tom',      distance: 1.2, avatar: "https://pbs.twimg.com/profile_images/517321674471923712/bFqGdWJL_400x400.jpeg"},
 	{name: 'Jan',      distance: 2.3, avatar: "http://zohararad.github.io/presentations/falling-in-love-with-ruby/presentation/images/ruby.png"},
 	{name: 'Mike',     distance: 5.1, avatar: "https://flyingonemptythoughts.files.wordpress.com/2013/06/neutral-its-something-l.png"},
 	{name: 'Jane',     distance: 4.5, avatar: "http://img3.wikia.nocookie.net/__cb20120826123355/vssaxtonhale/images/c/c2/Troll-face.png"},
 	{name: 'Bobbert',  distance: 4.3, avatar: "http://images4.fanpop.com/image/photos/19700000/Horton-hears-a-who-pics-horton-hears-a-who-19717311-1109-529.jpg"},
 	{name: 'Sarah',    distance: 1.3, avatar: "https://pbs.twimg.com/profile_images/447460759329460224/mt2UmwGG_400x400.jpeg"},
-	{name: 'Tedison',  distance: 3.2, avatar: "https://www.petfinder.com/wp-content/uploads/2012/11/122163343-conditioning-dog-loud-noises-632x475.jpg"}];
+	{name: 'Tedison',  distance: 3.2, avatar: "https://www.petfinder.com/wp-content/uploads/2012/11/122163343-conditioning-dog-loud-noises-632x475.jpg"} */
+    ];
     
     $http.get('http://localhost:6544/distance')
         .success(function(data, status, headers, config) {
 	    console.log( data );
+	    $scope.gotStuff = true;
+	    
 	    data.forEach(function(obj){ usersDistance.push(obj); });
-		$scope.gotStuff = true;
+	    usersDistance = $filter('orderBy')(usersDistance, '-distance', 'reverse');
+	    console.log("Real Fitbit users added to user list.");
+	    
+	    usersDistance.map(function(obj){ obj.color = randomColor(obj.name + obj.avatar); });
+	    console.log("Users assigned color", usersDistance);
 
+	    usersDistance = calcPaths(usersDistance);
+	    createPaths(usersDistance);
+	    console.log("Paths added");
 
-
-
+	    var centerCoords   =  getMidpoint(usersDistance[0].path.start, usersDistance[usersDistance.length - 1].path.end);
+	    $scope.center.lat  =  centerCoords.lat;
+	    $scope.center.lng  =  centerCoords.lng;
+	    $scope.center.zoom = 11 ;
+	    
 	    $scope.colorFunction = function() {   
 		return function(d, i) {
-	            console.log("Colors", d, $scope.colors);
-		    return $scope.colors[i];
+		    return userDistance[i].color;
 	   	};
 	    };
 	    
-	    
-	    console.log( "Here", usersDistance = $filter('orderBy')(usersDistance, '-distance', 'reverse'));
-
-			 createPath(usersDistance);
-
 	    // Map user distance to D3 compliant data object.
-	    /*  usersDistance.forEach(function(obj){
-		var temp = {
-		key: obj.name,
-		    values: [[obj.name, obj.distance]]
-		    //	    color: "#2f2f2f"
-		    };*/
-			usersDistance = $filter('orderBy')(usersDistance, '-distance');
-	    $scope.exampleData = [{
-		key: "Series 1",
-		values: usersDistance.map( function(obj) { return [obj.name, obj.distance]; })
-	    }]; 
-	    
-	    //$scope.exampleData.push(temp);
-	    //    color="colorFunction()"
-	    console.log("woooo", usersDistance);
-    
+	    $scope.exampleData =
+		($filter('orderBy')(usersDistance, '-distance')).map(function(obj){
+		    return   {
+			key: obj.name,
+			values: [[obj.name, obj.distance]],
+			color: obj.color
+		    };
+		});
 	}).error(function(data){
-	    console.log( data, 'CRY');
 	    // Cry
     	}); 
     
@@ -92,7 +88,7 @@ function fitbitController($scope, $filter, $http) {
 
 
     function getMidpoint( p1, p2) {
-	var dLon = radians(p2.lng - p1.lng);
+  	var dLon = radians(p2.lng - p1.lng);
 
 	//convert to radians
 	var lat1 = radians(p1.lat);
@@ -126,7 +122,7 @@ function fitbitController($scope, $filter, $http) {
 	    if (dLong > 0.0)
 		dLong = -(2.0 * Math.PI - dLong);
 	    else
-		dLong = (2.0 * Math.PI + dLong);
+		dLong =  (2.0 * Math.PI + dLong);
 	}
 
 	return (degrees(Math.atan2(dLong, dPhi)) + 360.0) % 360.0;
@@ -154,57 +150,45 @@ function fitbitController($scope, $filter, $http) {
 	return {lat: lat2 * 180 / Math.PI, lng: lng2 * 180 / Math.PI};
     };
     
-    function createPath(obj){
-	var startDest = {lat: 42.3699388, lng: -71.2458321}; // CloudLock HQ
-	var endDest   = {lat: 37.790599,  lng: -71.2458321};
-	
-	var prevCoords = startDest;
+    function calcPaths(users){
+	var prevCoords =  {lat: 42.3699388, lng: -71.2458321} //Cloudlock HQ;
 	var nextCoords = {lat: 0, lng: 0}; // Temp value
 	
-	var color = '' ;
-	for( var i = 0; i < obj.length ; i++ ){
-	    color = randColor();
-	    $scope.colors.push( color ) ;
-	    nextCoords = calcCoords( prevCoords, obj[i].distance );
-	    var tempPath = {	    
-		color: color,
+	for( var i = 0; i < users.length ; i++ ){
+	    users[i].path = {start: prevCoords, end: prevCoords = calcCoords( prevCoords, users[i].distance )};
+	}
+	return users;
+    }
+    
+    function createPaths(users){
+	
+	users.forEach( function(user){
+	    $scope.paths[user.color]= {	    
+		color: user.color,
 		weight: 6,
 		latlngs: [
-		    prevCoords,
-		    nextCoords
+		    user.path.start,
+		    user.path.end
 		]
 	    };
 	    
-	    var tempMarker = {
-	        lat: nextCoords.lat,
-		lng: nextCoords.lng,
+	    $scope.markers[user.color] = {
+	        lat: user.path.end.lat,
+		lng: user.path.end.lng,
 		focus: true,
 		draggable: false,
-		title: obj[i].name,
+		title:   user.name,
+		message: user.name,
 		icon: {
-		    iconUrl: obj[i].avatar,
-		    iconSize: [40, 40],
-		    iconAnchor: [20, 40],
-		    popupAnchor: [3, -32],
-		    shadowSize: [40, 40],
-		    shadowAnchor: [0, 0]
-		},
-		
-		message: obj[i].name
+		    iconUrl: user.avatar,
+		    iconSize:     [40, 40],
+		    iconAnchor:   [20, 40],
+		    popupAnchor:  [3, -32],
+		    shadowSize:   [40, 40],
+		    shadowAnchor: [0,   0]
+		}
 	    };
-	    
-	    // Inserts new objects into existing objects.
-	    // Needs to not be awful
-	    $scope.paths[color]   = tempPath;
-	    $scope.markers[color] = tempMarker;	    
-	    prevCoords = nextCoords; 
-	}
-
-	var centerCoords =  getMidpoint(startDest, prevCoords);
-	$scope.center.lat =  centerCoords.lat;
-	$scope.center.lng =  centerCoords.lng;
-	$scope.center.zoom = 11 ;
-	console.log( "Bottom" );
+	});		       
     }
 }
 
